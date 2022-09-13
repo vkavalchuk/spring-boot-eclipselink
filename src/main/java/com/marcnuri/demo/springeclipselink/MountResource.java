@@ -20,6 +20,7 @@ package com.marcnuri.demo.springeclipselink;
 import com.marcnuri.demo.springeclipselink.repository.Mount;
 import com.marcnuri.demo.springeclipselink.repository.MountDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +39,24 @@ public class MountResource {
   @GetMapping
   public Iterable<Mount> getAll() {
     return mountDao.findAll();
+  }
+
+    /*
+     * Never do that on production
+     * Use rows limitation on DB side, i.e 'select * from mount limit 1'
+     *
+     * It's just for demonstration purposes to show 'eclipselink + spring-data' streaming issue
+     */
+  @GetMapping("/first")
+  @Transactional(readOnly = true)
+  public String findFirstMount() {
+      final long start = System.currentTimeMillis();
+      final String mountName = mountDao
+          .streamAllMounts()
+          .findFirst()
+          .orElseThrow(RuntimeException::new)
+          .getName();
+      final long duration = System.currentTimeMillis() - start;
+      return mountName + "[run query duration = " + duration + "ms]";
   }
 }

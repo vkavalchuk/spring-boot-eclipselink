@@ -17,14 +17,18 @@
  */
 package com.marcnuri.demo.springeclipselink;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
 import org.eclipse.persistence.config.BatchWriting;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.logging.SessionLog;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,17 +43,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("com.marcnuri.demo.springeclipselink.repository")
 public class CustomJpaConfiguration extends JpaBaseConfiguration {
 
   protected CustomJpaConfiguration(DataSource dataSource, JpaProperties properties,
-    ObjectProvider<JtaTransactionManager> jtaTransactionManager) {
-    super(dataSource, properties, jtaTransactionManager);
+    ObjectProvider<JtaTransactionManager> jtaTransactionManager,
+    ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+    super(dataSource, properties, jtaTransactionManager, transactionManagerCustomizers);
   }
 
   @Override
@@ -105,7 +107,7 @@ public class CustomJpaConfiguration extends JpaBaseConfiguration {
     final Map<String, Object> ret = new HashMap<>();
     // Add any JpaProperty you are interested in and is supported by your Database and JPA implementation
     ret.put(PersistenceUnitProperties.BATCH_WRITING, BatchWriting.JDBC);
-    ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.FINEST_LABEL);
+    ret.put(PersistenceUnitProperties.LOGGING_LEVEL, SessionLog.OFF_LABEL);
     ret.put(PersistenceUnitProperties.WEAVING, "false");
     ret.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.CREATE_ONLY);
     ret.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_DATABASE_GENERATION);

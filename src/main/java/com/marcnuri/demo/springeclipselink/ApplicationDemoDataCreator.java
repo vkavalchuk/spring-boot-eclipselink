@@ -59,5 +59,17 @@ public class ApplicationDemoDataCreator implements CommandLineRunner {
       .climbedMount(k2)
       .climbedMount(everest)
       .build());
+
+    System.out.println("Starting DB Initialization...");
+
+    for (int i = 1; i <= 500000; i++)
+    {
+        if (i % 100000 == 0){
+            System.out.println("inserted 100K records");
+        }
+        mountDao.save(Mount.builder().alias("everest" + i).name("Mount Everest" + i).build());
+    }
+
+    System.out.println("...DB Initialized");
   }
 }

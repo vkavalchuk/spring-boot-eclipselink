@@ -1,3 +1,28 @@
+# Spring Data JPA + EclipseLink: Demonstration of streaming issue.
+Steps to reproduce the issue:
+1. Run spring-boot application
+```shell script
+$ ./gradlew bootRun
+```
+2. Hit endpoint and see timings
+```shell script
+$ curl -s localhost:8080/mounts/first 
+```
+3. Update org.springframework.boot plugin to 1.5.8.RELEASE
+4. Run spring-boot application
+```shell script
+$ ./gradlew bootRun
+```
+5. Hit endpoint and compare timings
+```shell script
+$ curl -s localhost:8080/mounts/first 
+```
+
+P.S. This example is for demonstration purposes to show **delay** between query hit and receiving first pack of data.
+Core issue affects not only the delay but also amount of memory that application should have available,
+it actually depends on size of DB table and amount of data in it.
+
+
 # Spring Data JPA + EclipseLink: Configuring Spring-Boot to use EclipseLink as the JPA provider
 
 Source code for tutorial published on https://blog.marcnuri.com/spring-data-jpa-eclipselink-configuring-spring-boot-to-use-eclipselink-as-the-jpa-provider/

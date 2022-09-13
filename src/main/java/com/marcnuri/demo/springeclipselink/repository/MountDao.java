@@ -17,10 +17,14 @@
  */
 package com.marcnuri.demo.springeclipselink.repository;
 
+import java.util.stream.Stream;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MountDao extends CrudRepository<Mount, String> {
-
+    @Query("select m from Mount m")
+    Stream<Mount> streamAllMounts();
 }
